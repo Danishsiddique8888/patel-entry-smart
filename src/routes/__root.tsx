@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Patel Residency — Visitor Registration" },
+      { name: "description", content: "Register your visit at Patel Residency. Secure, fast visitor entry with resident approval." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Patel Residency — Visitor Registration" },
+      { property: "og:description", content: "Register your visit at Patel Residency. Secure, fast visitor entry with resident approval." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Patel Residency — Visitor Registration" },
+      { name: "twitter:description", content: "Register your visit at Patel Residency. Secure, fast visitor entry with resident approval." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c853b4d3-0b69-4b21-b953-2665142c4fdd/id-preview-f467a42b--d6cf4cf2-e804-4849-879b-c5a3680926b6.lovable.app-1784823238929.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c853b4d3-0b69-4b21-b953-2665142c4fdd/id-preview-f467a42b--d6cf4cf2-e804-4849-879b-c5a3680926b6.lovable.app-1784823238929.png" },
     ],
     links: [
       {
