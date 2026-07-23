@@ -28,6 +28,7 @@ import {
   submitVisitorEntry,
   type Status,
 } from "@/lib/visitor.functions";
+import VisitorPass, { type VisitorPassData } from "./VisitorPass";
 
 const BUILDINGS = ["A", "B", "C"] as const;
 type BuildingKey = (typeof BUILDINGS)[number];
@@ -132,7 +133,15 @@ const STATUS_META: Record<
   },
 };
 
-type Screen = "form" | "loading" | "status";
+type Screen = "form" | "loading" | "status" | "pass";
+
+const STORAGE_KEY = "patel-residency:visitor";
+const PASS_STATUSES: Status[] = [
+  "Approved",
+  "Pending Approval",
+  "Entry Allowed",
+  "OTP Verified",
+];
 
 export default function VisitorRegistration() {
   const [visitorName, setVisitorName] = useState("");
@@ -148,6 +157,7 @@ export default function VisitorRegistration() {
   const [screen, setScreen] = useState<Screen>("form");
   const [status, setStatus] = useState<Status | null>(null);
   const [statusMessage, setStatusMessage] = useState<string>("");
+  const [passData, setPassData] = useState<VisitorPassData | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const flats = useMemo(
@@ -158,6 +168,32 @@ export default function VisitorRegistration() {
   useEffect(() => {
     setFlatNumber("");
   }, [building]);
+
+  // Prefill from localStorage on first mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as Partial<VisitorPassData>;
+      if (saved.visitorName) setVisitorName(saved.visitorName);
+      if (saved.mobileNumber) setMobileNumber(saved.mobileNumber);
+      if (saved.building) {
+        const key = saved.building.charAt(0) as BuildingKey;
+        if (BUILDINGS.includes(key)) {
+          setBuilding(key);
+          // set flat after building effect clears it
+          setTimeout(() => saved.flatNumber && setFlatNumber(saved.flatNumber), 0);
+        }
+      }
+      if (saved.purpose) setPurpose(saved.purpose);
+      if (saved.deliveryCompany) setDeliveryCompany(saved.deliveryCompany);
+      if (saved.vehicleNumber) setVehicleNumber(saved.vehicleNumber);
+      if (saved.photo) setPhoto(saved.photo);
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -204,7 +240,20 @@ export default function VisitorRegistration() {
       const result = await submitVisitorEntry({ data: payload });
       setStatus(result.status);
       setStatusMessage(result.message);
-      setScreen("status");
+
+      // Persist for next visit
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch {
+        // ignore
+      }
+
+      if (PASS_STATUSES.includes(result.status)) {
+        setPassData({ ...payload, status: result.status });
+        setScreen("pass");
+      } else {
+        setScreen("status");
+      }
     } catch {
       setStatus("Owner Not Responding");
       setScreen("status");
@@ -214,14 +263,7 @@ export default function VisitorRegistration() {
   const resetAll = () => {
     setScreen("form");
     setStatus(null);
-    setVisitorName("");
-    setMobileNumber("");
-    setBuilding("");
-    setFlatNumber("");
-    setPurpose("");
-    setDeliveryCompany("");
-    setVehicleNumber("");
-    setPhoto(null);
+    setPassData(null);
     setErrors({});
   };
 
@@ -446,6 +488,10 @@ export default function VisitorRegistration() {
             message={statusMessage}
             onReset={resetAll}
           />
+        )}
+
+        {screen === "pass" && passData && (
+          <VisitorPass data={passData} onBack={resetAll} />
         )}
 
         <footer className="mt-10 text-center text-xs text-muted-foreground">
