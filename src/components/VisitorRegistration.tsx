@@ -72,17 +72,6 @@ const DELIVERY_COMPANIES = [
   "Other",
 ];
 
-type Status =
-  | "Pending Approval"
-  | "Approved"
-  | "Rejected"
-  | "Delivery Timeout"
-  | "Owner Not Responding"
-  | "Entry Allowed"
-  | "OTP Required"
-  | "OTP Verified"
-  | "Invalid OTP";
-
 const STATUS_META: Record<
   Status,
   { icon: React.ComponentType<{ className?: string }>; tone: string; ring: string; desc: string }
