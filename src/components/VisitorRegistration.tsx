@@ -200,31 +200,10 @@ export default function VisitorRegistration() {
     setStatus(null);
     setStatusMessage("");
 
-    const webhookUrl = import.meta.env.VITE_WEBHOOK_URL as string | undefined;
-
     try {
-      if (!webhookUrl) {
-        await new Promise((r) => setTimeout(r, 1500));
-        setStatus("Pending Approval");
-        setScreen("status");
-        return;
-      }
-      const res = await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      let data: { status?: Status; message?: string } = {};
-      try {
-        data = await res.json();
-      } catch {
-        /* empty */
-      }
-      const nextStatus: Status =
-        (data.status as Status) ||
-        (res.ok ? "Pending Approval" : "Owner Not Responding");
-      setStatus(nextStatus);
-      setStatusMessage(data.message || "");
+      const result = await submitVisitorEntry({ data: payload });
+      setStatus(result.status);
+      setStatusMessage(result.message);
       setScreen("status");
     } catch {
       setStatus("Owner Not Responding");
