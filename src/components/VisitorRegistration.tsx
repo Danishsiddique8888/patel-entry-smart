@@ -24,6 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  submitVisitorEntry,
+  type Status,
+} from "@/lib/visitor.functions";
 
 const BUILDINGS = ["A", "B", "C"] as const;
 type BuildingKey = (typeof BUILDINGS)[number];
