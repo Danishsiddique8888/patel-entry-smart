@@ -167,11 +167,17 @@ export default function VisitorRegistration() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [screen, setScreen] = useState<Screen>("form");
+  const [screen, setScreen] = useState<Screen>("identify");
   const [status, setStatus] = useState<Status | null>(null);
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [passData, setPassData] = useState<VisitorPassData | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Returning-visitor lookup
+  const [known, setKnown] = useState<KnownVisitor | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [lookupError, setLookupError] = useState("");
+  const [editingProfile, setEditingProfile] = useState(false);
 
   const flats = useMemo(
     () => (building ? generateFlats(building) : []),
@@ -190,16 +196,6 @@ export default function VisitorRegistration() {
       const saved = JSON.parse(raw) as Partial<VisitorPassData>;
       if (saved.visitorName) setVisitorName(saved.visitorName);
       if (saved.mobileNumber) setMobileNumber(saved.mobileNumber);
-      if (saved.building) {
-        const key = saved.building.charAt(0) as BuildingKey;
-        if (BUILDINGS.includes(key)) {
-          setBuilding(key);
-          // set flat after building effect clears it
-          setTimeout(() => saved.flatNumber && setFlatNumber(saved.flatNumber), 0);
-        }
-      }
-      if (saved.purpose) setPurpose(saved.purpose);
-      if (saved.deliveryCompany) setDeliveryCompany(saved.deliveryCompany);
       if (saved.vehicleNumber) setVehicleNumber(saved.vehicleNumber);
       if (saved.photo) setPhoto(saved.photo);
     } catch {
