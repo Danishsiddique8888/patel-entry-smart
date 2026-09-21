@@ -212,6 +212,45 @@ export default function VisitorRegistration() {
     reader.readAsDataURL(file);
   };
 
+  const keepSavedVehicle = Boolean(
+    known?.hasVehicle && !editingProfile && !vehicleNumber.trim(),
+  );
+
+  const handleLookup = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    setLookupError("");
+    if (!/^[6-9]\d{9}$/.test(mobileNumber)) {
+      setLookupError("Enter a valid 10-digit Indian mobile number");
+      return;
+    }
+    setSearching(true);
+    try {
+      const res = await lookupVisitor({ data: { mobileNumber } });
+      if (res.found) {
+        setKnown({
+          visitorId: res.visitorId,
+          visitorName: res.visitorName,
+          vehicleNumberMasked: res.vehicleNumberMasked,
+          hasVehicle: res.hasVehicle,
+          previousVisits: res.previousVisits,
+        });
+        setVisitorName(res.visitorName);
+        setVehicleNumber("");
+        if (res.photo) setPhoto(res.photo);
+        setEditingProfile(false);
+      } else {
+        setKnown(null);
+        setEditingProfile(true);
+      }
+      setErrors({});
+      setScreen("form");
+    } catch {
+      setLookupError("Could not check your number. Please try again.");
+    } finally {
+      setSearching(false);
+    }
+  };
+
   const validate = () => {
     const e: Record<string, string> = {};
     if (!visitorName.trim()) e.visitorName = "Please enter your name";
