@@ -349,20 +349,121 @@ export default function VisitorRegistration() {
           </div>
         </header>
 
+        {screen === "identify" && (
+          <form
+            onSubmit={handleLookup}
+            className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] sm:p-8"
+          >
+            <div className="space-y-5">
+              <div className="text-center">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand">
+                  <Search className="h-7 w-7" />
+                </div>
+                <h2 className="mt-4 text-xl font-semibold text-foreground">
+                  Start with your mobile number
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  If you have visited before, we&apos;ll fill in your details for you.
+                </p>
+              </div>
+
+              <Field label="Mobile Number" error={lookupError}>
+                <div className="flex items-stretch overflow-hidden rounded-xl border border-input focus-within:ring-2 focus-within:ring-ring">
+                  <span className="grid place-items-center bg-muted px-3 text-sm font-medium text-muted-foreground">
+                    +91
+                  </span>
+                  <Input
+                    value={mobileNumber}
+                    onChange={(e) =>
+                      setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))
+                    }
+                    placeholder="10-digit mobile number"
+                    inputMode="numeric"
+                    autoFocus
+                    className="h-12 rounded-none border-0 focus-visible:ring-0"
+                    autoComplete="tel-national"
+                  />
+                </div>
+              </Field>
+
+              <Button
+                type="submit"
+                disabled={searching}
+                className="h-14 w-full rounded-2xl bg-brand text-base font-semibold text-brand-foreground shadow-[var(--shadow-soft)] hover:bg-brand/90"
+              >
+                {searching ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Checking your number...
+                  </>
+                ) : (
+                  <>
+                    Continue
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </>
+                )}
+              </Button>
+
+              <p className="text-center text-xs text-muted-foreground">
+                Your details are stored securely and shown only at the gate.
+              </p>
+            </div>
+          </form>
+        )}
+
         {screen === "form" && (
           <form
             onSubmit={handleSubmit}
             className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] sm:p-8"
           >
             <div className="space-y-5">
+              {known && (
+                <div className="rounded-2xl border border-success/30 bg-success/10 p-4">
+                  <div className="flex items-start gap-3">
+                    <UserCheck className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-foreground">
+                        Welcome back, {known.visitorName}!
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {known.previousVisits > 0
+                          ? `${known.previousVisits} previous visit${known.previousVisits > 1 ? "s" : ""} on record. `
+                          : ""}
+                        {known.hasVehicle
+                          ? `Saved vehicle: ${known.vehicleNumberMasked}. `
+                          : ""}
+                        Just tell us about today&apos;s visit.
+                      </p>
+                      {!editingProfile && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={() => setEditingProfile(true)}
+                          className="mt-2 h-8 rounded-lg px-2 text-xs text-brand hover:text-brand"
+                        >
+                          <Pencil className="mr-1.5 h-3.5 w-3.5" />
+                          Update my details
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <Field label="Visitor Name" error={errors.visitorName}>
-                <Input
-                  value={visitorName}
-                  onChange={(e) => setVisitorName(e.target.value)}
-                  placeholder="e.g. Rahul Sharma"
-                  className="h-12 rounded-xl"
-                  autoComplete="name"
-                />
+                {known && !editingProfile ? (
+                  <div className="flex h-12 items-center rounded-xl border border-input bg-muted/50 px-3 text-sm font-medium text-foreground">
+                    {visitorName}
+                  </div>
+                ) : (
+                  <Input
+                    value={visitorName}
+                    onChange={(e) => setVisitorName(e.target.value)}
+                    placeholder="e.g. Rahul Sharma"
+                    className="h-12 rounded-xl"
+                    autoComplete="name"
+                  />
+                )}
               </Field>
 
               <Field label="Mobile Number" error={errors.mobileNumber}>
