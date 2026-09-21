@@ -138,7 +138,15 @@ const STATUS_META: Record<
   },
 };
 
-type Screen = "form" | "loading" | "status" | "pass";
+type Screen = "identify" | "form" | "loading" | "status" | "pass";
+
+type KnownVisitor = {
+  visitorId: string;
+  visitorName: string;
+  vehicleNumberMasked: string;
+  hasVehicle: boolean;
+  previousVisits: number;
+};
 
 const STORAGE_KEY = "patel-residency:visitor";
 const PASS_STATUSES: Status[] = [
