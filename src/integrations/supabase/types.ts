@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      visit_records: {
+        Row: {
+          block: string
+          created_at: string
+          delivery_company: string | null
+          flat_number: string
+          id: string
+          purpose: string
+          vehicle_number: string | null
+          visit_status: string
+          visited_at: string
+          visitor_id: string
+        }
+        Insert: {
+          block: string
+          created_at?: string
+          delivery_company?: string | null
+          flat_number: string
+          id?: string
+          purpose: string
+          vehicle_number?: string | null
+          visit_status?: string
+          visited_at?: string
+          visitor_id: string
+        }
+        Update: {
+          block?: string
+          created_at?: string
+          delivery_company?: string | null
+          flat_number?: string
+          id?: string
+          purpose?: string
+          vehicle_number?: string | null
+          visit_status?: string
+          visited_at?: string
+          visitor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visit_records_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "visitor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visitor_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          mobile_number: string
+          photo: string | null
+          updated_at: string
+          vehicle_number: string | null
+          visitor_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mobile_number: string
+          photo?: string | null
+          updated_at?: string
+          vehicle_number?: string | null
+          visitor_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mobile_number?: string
+          photo?: string | null
+          updated_at?: string
+          vehicle_number?: string | null
+          visitor_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
