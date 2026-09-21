@@ -285,19 +285,23 @@ export default function VisitorRegistration() {
     setStatusMessage("");
 
     try {
-      const result = await submitVisitorEntry({ data: payload });
+      const result = await submitVisitorEntry({
+        data: { ...payload, keepSavedVehicle },
+      });
       setStatus(result.status);
       setStatusMessage(result.message);
 
+      const finalPayload = { ...payload, vehicleNumber: result.vehicleNumber };
+
       // Persist for next visit
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(finalPayload));
       } catch {
         // ignore
       }
 
       if (PASS_STATUSES.includes(result.status)) {
-        setPassData({ ...payload, status: result.status });
+        setPassData({ ...finalPayload, status: result.status });
         setScreen("pass");
       } else {
         setScreen("status");
@@ -309,10 +313,20 @@ export default function VisitorRegistration() {
   };
 
   const resetAll = () => {
-    setScreen("form");
+    setScreen("identify");
     setStatus(null);
     setPassData(null);
     setErrors({});
+    setKnown(null);
+    setEditingProfile(false);
+    setLookupError("");
+    setMobileNumber("");
+    setVisitorName("");
+    setVehicleNumber("");
+    setBuilding("");
+    setFlatNumber("");
+    setPurpose("");
+    setDeliveryCompany("");
   };
 
   return (
