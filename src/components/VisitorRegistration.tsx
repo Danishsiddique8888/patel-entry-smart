@@ -13,6 +13,10 @@ import {
   DoorOpen,
   PhoneOff,
   ShieldAlert,
+  UserCheck,
+  Pencil,
+  ArrowRight,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import {
   submitVisitorEntry,
+  lookupVisitor,
   type Status,
 } from "@/lib/visitor.functions";
 import VisitorPass, { type VisitorPassData } from "./VisitorPass";
