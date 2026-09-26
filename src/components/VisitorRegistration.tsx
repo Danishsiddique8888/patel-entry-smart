@@ -556,12 +556,27 @@ export default function VisitorRegistration() {
               )}
 
               <Field label="Vehicle Number (optional)">
-                <Input
-                  value={vehicleNumber}
-                  onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
-                  placeholder="e.g. GJ01AB1234"
-                  className="h-12 rounded-xl"
-                />
+                {known?.hasVehicle && !editingProfile ? (
+                  <div className="flex h-12 items-center justify-between rounded-xl border border-input bg-muted/50 px-3">
+                    <span className="text-sm font-medium text-foreground">
+                      {known.vehicleNumberMasked}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setEditingProfile(true)}
+                      className="text-xs font-medium text-brand"
+                    >
+                      Change
+                    </button>
+                  </div>
+                ) : (
+                  <Input
+                    value={vehicleNumber}
+                    onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
+                    placeholder="e.g. GJ01AB1234"
+                    className="h-12 rounded-xl"
+                  />
+                )}
               </Field>
 
               <Field label="Visitor Photo">
