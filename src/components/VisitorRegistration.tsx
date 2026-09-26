@@ -467,20 +467,18 @@ export default function VisitorRegistration() {
               </Field>
 
               <Field label="Mobile Number" error={errors.mobileNumber}>
-                <div className="flex items-stretch overflow-hidden rounded-xl border border-input focus-within:ring-2 focus-within:ring-ring">
-                  <span className="grid place-items-center bg-muted px-3 text-sm font-medium text-muted-foreground">
-                    +91
-                  </span>
-                  <Input
-                    value={mobileNumber}
-                    onChange={(e) =>
-                      setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))
-                    }
-                    placeholder="10-digit mobile number"
-                    inputMode="numeric"
-                    className="h-12 rounded-none border-0 focus-visible:ring-0"
-                    autoComplete="tel-national"
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="flex h-12 flex-1 items-center rounded-xl border border-input bg-muted/50 px-3 text-sm font-medium text-foreground">
+                    +91 {mobileNumber}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={resetAll}
+                    className="h-12 rounded-xl"
+                  >
+                    Change
+                  </Button>
                 </div>
               </Field>
 
@@ -558,12 +556,27 @@ export default function VisitorRegistration() {
               )}
 
               <Field label="Vehicle Number (optional)">
-                <Input
-                  value={vehicleNumber}
-                  onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
-                  placeholder="e.g. GJ01AB1234"
-                  className="h-12 rounded-xl"
-                />
+                {known?.hasVehicle && !editingProfile ? (
+                  <div className="flex h-12 items-center justify-between rounded-xl border border-input bg-muted/50 px-3">
+                    <span className="text-sm font-medium text-foreground">
+                      {known.vehicleNumberMasked}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setEditingProfile(true)}
+                      className="text-xs font-medium text-brand"
+                    >
+                      Change
+                    </button>
+                  </div>
+                ) : (
+                  <Input
+                    value={vehicleNumber}
+                    onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
+                    placeholder="e.g. GJ01AB1234"
+                    className="h-12 rounded-xl"
+                  />
+                )}
               </Field>
 
               <Field label="Visitor Photo">
